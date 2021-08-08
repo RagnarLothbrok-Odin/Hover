@@ -1,0 +1,6 @@
+name: Hover
+version: ${project.version}
+main: me.venom.hover.Hover
+api-version: 1.17
+authors: [ VenomTR ]
+description: If you have fly enabled, this plugin will teleport you 0.25 above the ground, for optimal mining on a Prison server
