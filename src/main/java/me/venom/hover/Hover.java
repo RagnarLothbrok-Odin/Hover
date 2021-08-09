@@ -21,10 +21,10 @@ public final class Hover extends JavaPlugin {
         HoverConfig.save();
 
         // Check if config file value is valid
-        if (HoverConfig.get().getDouble("hover-distance") > 2.0 || HoverConfig.get().getDouble("hover-distance") == 0.0) {
-            HoverConfig.get().set("hover-distance", 0.01);
+        if (HoverConfig.get().getDouble("Hover-Distance") > 2.0 || HoverConfig.get().getDouble("Hover-Distance") == 0.0) {
+            HoverConfig.get().set("Hover-Distance", 0.01);
             HoverConfig.save();
-            getLogger().info(ChatColor.DARK_RED + "Error occurred within config.yml; invalid 'hover-distance' value. Please input a valid number between '0.01' and '2'");
+            getLogger().info(ChatColor.DARK_RED + "Error occurred within config.yml; invalid 'Hover-Distance' value. Please input a valid number between '0.01' and '2'");
         }
 
         // Plugin startup logic
@@ -45,33 +45,46 @@ public final class Hover extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (command.getName().equalsIgnoreCase("hover")) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
 
-                // Check if user has permission to fly
-                if (player.hasPermission("essentials.fly") && player.hasPermission("hover.hover")) {
-                    if (player.isFlying()) {
-                        player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Please stand on the block you wish to hover over.");
-                    } else {
-                        // Set the teleport location
-                        Location loc = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() + HoverConfig.get().getDouble("hover-distance"), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
+            if (command.getName().equalsIgnoreCase("hover")) {
 
-                        // Teleport player up by 0.01 blocks (default) or value of config.yml
-                        if (!player.getAllowFlight()) {
-                            player.setAllowFlight(true);
+                if (args.length == 0) {
+                    // Check if user has permission to fly
+                    if (player.hasPermission("essentials.fly") && player.hasPermission("hover.hover")) {
+                        if (player.isFlying()) {
+                            player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Please stand on the block you wish to hover over.");
+                        } else {
+                            // Set the teleport location
+                            Location loc = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() + HoverConfig.get().getDouble("Hover-Distance"), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
+
+                            // Teleport player up by 0.01 blocks (default) or value of config.yml
+                            if (!player.getAllowFlight()) {
+                                player.setAllowFlight(true);
+                            }
+
+                            player.setFlying(true);
+                            player.teleport(loc);
+                            player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Activated hover mode.");
                         }
-
-                        player.setFlying(true);
-                        player.teleport(loc);
-                        player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Activated hover mode.");
+                    } else {
+                        player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "You do not have permission to run this command.");
                     }
-                } else {
-                    player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "You do not have permission to run this command.");
+                }
+
+                if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+                    if (player.hasPermission("hover.reload")) {
+                        // Dear future Venom, please add a catch to this reload
+                        HoverConfig.reload();
+                        player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Reloaded plugin.");
+                        getLogger().info(ChatColor.DARK_PURPLE + "Reloaded Plugin.");
+                    } else {
+                        player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "You do not have permission to run this command.");
+                    }
                 }
             }
         }
-
         return true;
     }
 }
