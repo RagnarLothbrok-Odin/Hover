@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class HoverConfig {
 
@@ -20,7 +21,7 @@ public class HoverConfig {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                // do nothing
+                Bukkit.getLogger().log(Level.SEVERE, "Error occurred while generating default config.yml", e);
             }
         }
 
@@ -35,13 +36,12 @@ public class HoverConfig {
         try {
             customFile.save(file);
         } catch (IOException e) {
-            System.out.println("Error occurred while saving file.");
+            Bukkit.getLogger().log(Level.SEVERE, "Error occurred while saving the file", e);
         }
     }
 
     public static void reload() {
         customFile = YamlConfiguration.loadConfiguration(file);
     }
-
 
 }
