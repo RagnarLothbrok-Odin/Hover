@@ -6,9 +6,15 @@ authors: [ VenomTR ]
 description: If you have fly enabled, this plugin will teleport you off the ground, for optimal mining on a Prison server
 permissions:
   hover.hover:
-    description: Access to the /hover command
+    description: Access to the /hover command.
+    default: op
+  hover.reload:
+    description: Access to /reload command.
     default: op
 commands:
   hover:
     description: Hover from your current position.
     usage: /<command>
+  hover reload:
+    description: Reloads plugin.
+    usage: /hover <command>
