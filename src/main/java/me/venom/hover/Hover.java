@@ -34,7 +34,7 @@ public final class Hover extends JavaPlugin {
                 Player player = (Player) sender;
 
                 // Check if user has permission to fly
-                if (player.hasPermission("essentials.fly")) {
+                if (player.hasPermission("essentials.fly") && player.hasPermission("hover.hover")) {
                     if (player.isFlying()) {
                         player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Please stand on the block you wish to hover over.");
                     } else {
