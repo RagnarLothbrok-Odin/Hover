@@ -35,7 +35,7 @@ public class HoverConfig {
         try {
             customFile.save(file);
         } catch (IOException e) {
-            System.out.println("Error occured while saving file.");
+            System.out.println("Error occurred while saving file.");
         }
     }
 
