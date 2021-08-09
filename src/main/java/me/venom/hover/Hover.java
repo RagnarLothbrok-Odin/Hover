@@ -8,8 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
-
 public final class Hover extends JavaPlugin {
 
     @Override
@@ -19,25 +17,14 @@ public final class Hover extends JavaPlugin {
         saveDefaultConfig();
 
         HoverConfig.setup();
-        HoverConfig.get().addDefault("hover-distance", "0.01");
         HoverConfig.get().options().copyDefaults(true);
         HoverConfig.save();
 
         // Check if config file value is valid
-        try {
-            Float.parseFloat(HoverConfig.get().getString("hover-distance"));
-        } catch (NumberFormatException e) {
-            // Config distance is not valid
-            HoverConfig.get().set("hover-distance", "0.01");
+        if (HoverConfig.get().getDouble("hover-distance") > 2.0 || HoverConfig.get().getDouble("hover-distance") == 0.0) {
+            HoverConfig.get().set("hover-distance", 0.01);
             HoverConfig.save();
-            getLogger().info(ChatColor.DARK_RED + "Error occurred within config.yml; invalid 'hover-distance' value. Please select a value between '0.01' and '2'");
-        }
-
-        // Check if config file value is max 2.0
-        if (Float.parseFloat(HoverConfig.get().getString("hover-distance")) > 2.0) {
-            HoverConfig.get().set("hover-distance", "0.01");
-            HoverConfig.save();
-            getLogger().info(ChatColor.DARK_RED + "Error occurred within config.yml; invalid 'hover-distance' value. Please select a value between '0.01' and '2'");
+            getLogger().info(ChatColor.DARK_RED + "Error occurred within config.yml; invalid 'hover-distance' value. Please input a valid number between '0.01' and '2'");
         }
 
         // Plugin startup logic
@@ -68,7 +55,7 @@ public final class Hover extends JavaPlugin {
                         player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Please stand on the block you wish to hover over.");
                     } else {
                         // Set the teleport location
-                        Location loc = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() + Float.parseFloat(HoverConfig.get().getString("hover-distance")), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
+                        Location loc = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() + HoverConfig.get().getDouble("hover-distance"), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
 
                         // Teleport player up by 0.01 blocks (default) or value of config.yml
                         if (!player.getAllowFlight()) {
