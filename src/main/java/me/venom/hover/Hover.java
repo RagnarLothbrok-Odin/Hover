@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
+
 public final class Hover extends JavaPlugin {
 
     @Override
@@ -20,6 +22,23 @@ public final class Hover extends JavaPlugin {
         HoverConfig.get().addDefault("hover-distance", "0.01");
         HoverConfig.get().options().copyDefaults(true);
         HoverConfig.save();
+
+        // Check if config file value is valid
+        try {
+            Float.parseFloat(HoverConfig.get().getString("hover-distance"));
+        } catch (NumberFormatException e) {
+            // Config distance is not valid
+            HoverConfig.get().set("hover-distance", "0.01");
+            HoverConfig.save();
+            getLogger().info(ChatColor.DARK_RED + "Error occurred within config.yml; invalid 'hover-distance' value. Please select a value between '0.01' and '2'");
+        }
+
+        // Check if config file value is max 2.0
+        if (Float.parseFloat(HoverConfig.get().getString("hover-distance")) > 2.0) {
+            HoverConfig.get().set("hover-distance", "0.01");
+            HoverConfig.save();
+            getLogger().info(ChatColor.DARK_RED + "Error occurred within config.yml; invalid 'hover-distance' value. Please select a value between '0.01' and '2'");
+        }
 
         // Plugin startup logic
         getLogger().info("Hover has started!");
