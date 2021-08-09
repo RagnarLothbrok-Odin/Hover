@@ -15,7 +15,7 @@ public final class Hover extends JavaPlugin {
         getLogger().info("Hover has started!");
         // Check if Essentials is installed on the server
         if (getServer().getPluginManager().getPlugin("Essentials") == null) {
-            getLogger().info(ChatColor.translateAlternateColorCodes('&', "&4Missing dependency: Essentials. Disabling plugin."));
+            getLogger().info(ChatColor.DARK_RED + "Missing dependency: Essentials. Disabling plugin.");
             this.getPluginLoader().disablePlugin(this);
         }
     }
@@ -36,7 +36,7 @@ public final class Hover extends JavaPlugin {
                 // Check if user has permission to fly
                 if (player.hasPermission("essentials.fly")) {
                     if (player.isFlying()) {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&5&l[Hover] &fPlease stand on the block you wish to hover over."));
+                        player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Please stand on the block you wish to hover over.");
                     } else {
                         // Set the teleport location
                         Location loc = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() + 0.01, player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
@@ -45,13 +45,13 @@ public final class Hover extends JavaPlugin {
                         if (!player.getAllowFlight()) {
                             player.setAllowFlight(true);
                         }
-                        
+
                         player.setFlying(true);
                         player.teleport(loc);
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&5&l[Hover] &fActivated hover mode."));
+                        player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Activated hover mode.");
                     }
                 } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&5&l[Hover] &f You do not have permission to use this command!"));
+                    player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "You do not have permission to run this command.");
                 }
             }
         }
