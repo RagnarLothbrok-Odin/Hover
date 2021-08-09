@@ -1,5 +1,6 @@
 package me.venom.hover;
 
+import me.venom.hover.files.HoverConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -11,6 +12,15 @@ public final class Hover extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Setup Config File
+        getConfig().options().copyDefaults();
+        saveDefaultConfig();
+
+        HoverConfig.setup();
+        HoverConfig.get().addDefault("hover-distance", "0.01");
+        HoverConfig.get().options().copyDefaults(true);
+        HoverConfig.save();
+
         // Plugin startup logic
         getLogger().info("Hover has started!");
         // Check if Essentials is installed on the server
@@ -39,9 +49,9 @@ public final class Hover extends JavaPlugin {
                         player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Please stand on the block you wish to hover over.");
                     } else {
                         // Set the teleport location
-                        Location loc = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() + 0.01, player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
+                        Location loc = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() + Float.parseFloat(HoverConfig.get().getString("hover-distance")), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
 
-                        // Teleport player up by 0.01 blocks
+                        // Teleport player up by 0.01 blocks (default) or value of config.yml
                         if (!player.getAllowFlight()) {
                             player.setAllowFlight(true);
                         }
