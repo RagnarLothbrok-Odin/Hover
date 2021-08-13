@@ -1,12 +1,16 @@
 package me.venom.hover;
 
 import me.venom.hover.files.HoverConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
+import java.util.logging.Level;
 
 public final class Hover extends JavaPlugin {
 
@@ -76,9 +80,20 @@ public final class Hover extends JavaPlugin {
                 if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
                     if (player.hasPermission("hover.reload")) {
                         // Dear future Venom, please add a catch to this reload
-                        HoverConfig.reload();
-                        player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Reloaded plugin.");
-                        getLogger().info(ChatColor.DARK_PURPLE + "Reloaded Plugin.");
+                        try {
+                            HoverConfig.reload();
+
+                            if (HoverConfig.get().getDouble("Hover-Distance") > 2.0 || HoverConfig.get().getDouble("Hover-Distance") == 0.0) {
+                                HoverConfig.get().set("Hover-Distance", 0.01);
+                                HoverConfig.save();
+                                getLogger().info(ChatColor.DARK_RED + "Error occurred within config.yml; invalid 'Hover-Distance' value. Please input a valid number between '0.01' and '2'");
+                            }
+
+                            player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "Reloaded plugin.");
+                            getLogger().info(ChatColor.DARK_PURPLE + "Reloaded Plugin.");
+                        } catch (Exception e) {
+                            Bukkit.getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "An error occurred while reloading Hover", e);
+                        }
                     } else {
                         player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Hover] " + ChatColor.WHITE + "You do not have permission to run this command.");
                     }
