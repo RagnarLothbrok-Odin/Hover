@@ -1,6 +1,7 @@
 package me.venom.hover;
 
 import me.venom.hover.files.HoverConfig;
+import me.venom.hover.files.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -15,6 +16,12 @@ public final class Hover extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Check if Essentials is installed on the server
+        if (getServer().getPluginManager().getPlugin("Essentials") == null) {
+            getLogger().info(ChatColor.DARK_RED + "Missing dependency: Essentials. Disabling plugin.");
+            this.getPluginLoader().disablePlugin(this);
+        }
+
         // Setup Config File
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -30,13 +37,17 @@ public final class Hover extends JavaPlugin {
             getLogger().info(ChatColor.DARK_RED + "Error occurred within config.yml; invalid 'Hover-Distance' value. Please input a valid number between '0.01' and '2'");
         }
 
+        // Check if plugin is up-to-date
+        new UpdateChecker(this, 95210).getVersion(version -> {
+            if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                getLogger().info(ChatColor.DARK_PURPLE + "Plugin is up-to-date!.");
+            } else {
+                getLogger().info(ChatColor.DARK_PURPLE + "Update available. You are on" + ChatColor.RED + " v" + this.getDescription().getVersion() + ChatColor.DARK_PURPLE + " and " + ChatColor.RED + "v" + version + ChatColor.DARK_PURPLE + " is available at: https://www.spigotmc.org/resources/hover.95210/");
+            }
+        });
+
         // Plugin startup logic
         getLogger().info("Hover has started!");
-        // Check if Essentials is installed on the server
-        if (getServer().getPluginManager().getPlugin("Essentials") == null) {
-            getLogger().info(ChatColor.DARK_RED + "Missing dependency: Essentials. Disabling plugin.");
-            this.getPluginLoader().disablePlugin(this);
-        }
     }
 
     @Override
@@ -78,7 +89,6 @@ public final class Hover extends JavaPlugin {
 
                 if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
                     if (player.hasPermission("hover.reload")) {
-                        // Dear future Venom, please add a catch to this reload
                         try {
                             HoverConfig.reload();
 
